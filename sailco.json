@@ -1,0 +1,135 @@
+{
+  "Problem": {
+  "Name": "sailco",
+  "Reference": "https://www.ibm.com/support/knowledgecenter/SSSA5P_12.7.1/ilog.odms.ide.help/OPL_Studio/opllanguser/topics/opl_languser_app_areas_pwl_inventory.html",
+  "Author": "Jeremy A. Bloom (jeremyblmca@gmail.com)",
+  "Notices": "Copyright © 2019 Jeremy A. Bloom"
+  },
+  "Input_Data_Model": {
+    "periods": {"+period":     "Integer"},
+    "demands": {
+      "*period":               "Integer",
+      "demand":                "Double"
+    },
+    "parameters": {
+      "regularCost":           "Double",
+      "extraCost":             "Double",
+      "capacity":              "Double",
+      "initialInventory":      "Double",
+      "inventoryCost":         "Double"
+    }
+  },
+  "Output_Data_Model": {
+    "production": {
+      "*period":               "Double",
+      "regular":               "Double",
+      "extra":                 "Double",
+      "inventory":             "Double",
+      "marginalCapacityValue": "Double"
+    }
+  },
+  "Data": {
+    "periods": [
+      {"period": 1},
+      {"period": 2},
+      {"period": 3},
+      {"period": 4}
+    ],
+    "demands": [
+      {"period": 1, "demand": 40.0},
+      {"period": 2, "demand": 60.0},
+      {"period": 3, "demand": 72.0},
+      {"period": 4, "demand": 25.0}
+    ],
+    "parameters": [
+      {"regularCost":      400.0},
+      {"extraCost":        450.0},
+      {"capacity":         40.0},
+      {"initialInventory": 10.0},
+      {"inventoryCost":    20.0}
+    ]
+  },
+  "Variables": [
+    {
+      "Name": "regular",
+      "Type": "Continuous",
+      "Index": "periods",
+      "Bounds": "Non-negative"
+    },
+    {
+      "Name": "extra",
+      "Type": "Continuous",
+      "Index": "periods",
+      "Bounds": "Non-negative"
+    },
+    {
+      "Name": "inventory",
+      "Type": "Continuous",
+      "Index": "periods",
+      "Bounds": "Non-negative"
+    }
+  ],
+  "Constraints": [
+    {
+      "Name": "ctCapacity",
+      "Type": "Linear",
+      "Index": "periods",
+      "Sense": "<=",
+      "RHS": "parameters.capacity"
+    },
+    {
+      "Name": "ctBoat",
+      "Type": "Linear",
+      "Index": "periods.period >1",
+      "Sense": "==",
+      "RHS": "demands.demand"
+    },
+    {
+      "Name": "ctBoat",
+      "Type": "Linear",
+      "Index": "periods.period ==1",
+      "Sense": "==",
+      "RHS": "demands.demand + parameters.initialInventory"
+    }
+  ],
+  "Decision_Expressions": [
+    {
+      "Name": "totalCost",
+      "Type": "Linear",
+      "Index": "Self",
+      "Sense": "minimize"
+    }
+  ],
+  "Coefficients": [
+    {
+      "Name": "ctCapacity_regular",
+      "Constraints": "ctCapacity",
+      "Variables": "regular",
+      "Entries": 1.0
+    },
+    {
+      "Name": "ctBoat_regular",
+      "Constraints": "ctBoat",
+      "Variables": "regular",
+      "Entries": 1.0
+    },
+    {
+      "Name": "ctBoat_extra",
+      "Constraints": "ctBoat",
+      "Variables": "extra",
+      "Entries": 1.0
+    },
+    {
+      "Name": "ctBoat_inventory",
+      "Constraints": "ctBoat",
+      "Variables": "inventory",
+      "Entries": 1.0
+    },
+    {
+      "Name": "ctBoat_lagged_inventory",
+      "Constraints": {"Name": "ctBoat", "Index": "periods.period > 1"},
+      "Variables": {"Name":"inventory", "Index": "periods.period-1"},
+      "Entries": -1.0
+    }
+  ]
+}

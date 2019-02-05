@@ -1,0 +1,211 @@
+{
+  "Problem": {
+    "Name": "stochastic-warehouse_location",
+    "Reference": "https://github.com/JeremyBloom/Optimization---Sample-Notebooks/blob/master/Locating%2BWarehouses%2Bto%2BMinimize%2BCosts%2BCase%2B2%2Bpub%2B3.ipynb",
+    "Author": "Jeremy A. Bloom (jeremyblmca@gmail.com)",
+    "Notices": "Copyright © 2019 Jeremy A. Bloom"
+  },
+  "Input_Data_Model": {
+    "warehouses": {
+    "*location":      "String",
+    "fixedCost":      "Double",
+    "capacityCost":   "Double"
+    },
+    "routes": {
+      "*location":    "String",
+      "*store":       "String",
+      "shippingCost": "Double"
+    },
+    "stores": {
+      "*store":       "String"
+    },
+    "demands": {
+      "*store":       "String",
+      "*scenario":    "String",
+      "amount":       "Double"
+    },
+    "scenarios": {
+      "*scenario":    "String",
+      "totalDemand":  "Double",
+      "probability":  "Double"
+    }
+},
+  "Output_Data_Model": {
+    "objectives": {
+      "*problem":     "String",
+      "*dExpr":       "String",
+      "*scenario":    "String",
+      "*iteration":   "Integer",
+      "value":        "Double"
+    },
+    "openWarehouses": {
+      "*location":    "String",
+      "open":         "Integer",
+      "capacity":     "Double"
+    },
+    "shipments": {
+      "*location":    "String",
+      "*store":       "String",
+      "*scenario":    "String",
+      "amount":       "Double"
+    }
+  },
+  "Data": {
+    "routes" : [
+      {"location" : "Brockton, MA", "store" : "Malden, MA", "shippingCost" : 42.94},
+  //  	...
+      {"location" : "Bristol, CT", "store" : "Stamford, CT", "shippingCost" : 94.66}
+    ],
+    "stores" : [
+      {"storeId" : "Malden, MA"},
+  //  	...
+      {"storeId" : "Stamford, CT"}
+    ],
+    "warehouses" : [
+      {"location" : "Brockton, MA", "fixedCost" : 550000.0, "capacityCost" : 148.0},
+      {"location" : "Bristol, CT", "fixedCost" : 600000.0, "capacityCost" : 148.0}
+    ],
+    "demands" : [
+      {"store":"Malden, MA", "scenario":"1", "amount":87.09555746715931},
+      {"store":"Malden, MA", "scenario":"2", "amount":103.56489065352297},
+  //  	...
+      {"store":"Stamford, CT", "scenario":"51", "amount":63.717132810058175},
+      {"store":"Stamford, CT", "scenario":"52", "amount":78.0645800077595}
+    ],
+    "scenarios": [
+      {"scenario":"1", "totalDemand":18035.155681144734, "probability":0.019230769230769232},
+      {"scenario":"52", "totalDemand":18170.46643775925, "scenario":0.019230769230769232}
+    ]
+  },
+  "Variables": [
+    {
+      "Name": "open",
+      "Type": "Binary",
+      "Index": "warehouses",
+      "Bounds": "Non-negative"
+    },
+    {
+      "Name": "capacity",
+      "Type": "Continuous",
+      "Index": "warehouses",
+      "Bounds": "Non-negative"
+    },
+    {
+      "Name": "ship",
+      "Type": "Continuous",
+      "Index": "scenarios Cross routes",
+      "Bounds": {"Lower": 0.0, "Upper": 1.0}
+    }
+  ],
+  "Constraints": [
+    {
+      "Name": "ctCapacity",
+      "Type": "Linear",
+      "Index": "scenarios Cross warehouses",
+      "Sense": ">=",
+      "RHS": 0.0
+    },
+    {
+      "Name": "ctDemand",
+      "Type": "Linear",
+      "Index": "scenarios Cross stores",
+      "Sense": ">=",
+      "RHS": 1.0
+    },
+    {
+      "Name": "ctSupply",
+      "Type": "Linear",
+      "Index": "scenarios Cross routes",
+      "Sense": "<=",
+      "RHS": 0.0
+    }
+  ],
+  "Decision_Expressions": [
+    {
+      "Name": "fixedCost",
+      "Type": "Linear",
+      "Index": "Self",
+      "Sense": "None"
+    },
+    {
+      "Name": "operatingCost",
+      "Type": "Linear",
+      "Index": "scenarios",
+      "Sense": "None"
+    },
+    {
+      "Name": "totalOperatingCost",
+      "Type": "Linear",
+      "Index": "Self",
+      "Sense": "None"
+    },
+    {
+      "Name": "totalCost",
+      "Type": "Linear",
+      "Index": "Self",
+      "Sense": "Minimize"
+    }
+  ],
+  "Coefficients": [
+    {
+      "Name": "entries_fixed_open",
+      "Decision_Expressions": "fixedCost",
+      "Variables": "open",
+      "Entries": "warehouses.fixedCost"
+    },
+    {
+      "Name": "entries_fixed_capacity",
+      "Decision_Expressions": "fixedCost",
+      "Variables": "capacity",
+      "Entries": "warehouses.capacityCost"
+    },
+    {
+      "Name": "entries_operating_ship",
+      "Decision_Expressions": "operatingCost",
+      "Variables": "ship",
+      "Entries": "routes.shippingCost"
+    },
+    {
+      "Name": "entries_total_fixed",
+      "Decision_Expressions": "totalCost",
+      "Variables": "fixedCost",
+      "Entries": 1.0
+    },
+    {
+      "Name": "entries_total_operating",
+      "Decision_Expressions": "totalCost",
+      "Variables": "operatingCost",
+      "Entries": 1.0
+    },
+    {
+      "Name": "entries_ctCapacity_capacity",
+      "Constraints": "ctCapacity",
+      "Variables": "capacity",
+      "Entries": 1.0
+    },
+    {
+      "Name": "entries_ctCapacity_ship",
+      "Constraints": "ctCapacity",
+      "Variables": "ship",
+      "Entries": "-demands.amount"
+    },
+     {
+      "Name": "entries_ctDemand_ship",
+      "Constraints": "ctDemand",
+      "Variables": "ship",
+      "Entries": 1.0
+    },
+     {
+      "Name": "entries_ctSupply_open",
+      "Constraints": "ctSupply",
+      "Variables": "open",
+      "Entries": -1.0
+    },
+     {
+      "Name":"entries_ctSupply_ship",
+      "Constraints": "ctSupply",
+      "Variables": "ship",
+      "Entries": 1.0
+    }
+  ]
+}

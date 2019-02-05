@@ -1,0 +1,100 @@
+{
+  "Problem": {
+    "Name": "volsay",
+    "Reference": "https://www.ibm.com/support/knowledgecenter/en/SSSA5P_12.5.0/ilog.odms.ide.help/OPL_Studio/opllanguser/topics/opl_languser_shortTour_LP_prodplanning.html",
+    "Author": "Jeremy A. Bloom (jeremyblmca@gmail.com)",
+    "Notices": "Copyright © 2019 Jeremy A. Bloom"
+  },
+  "Input_Data_Model": {},
+  "Output_Data_Model": {},
+  "Data": {},
+  "Variables": [
+    {
+      "Name": "gas",
+      "Type": "Continuous",
+      "Index": "Self",
+      "Bounds": "Non-negative"
+    },
+    {
+      "Name": "chloride",
+      "Type": "Continuous",
+      "Index": "Self",
+      "Bounds": "Non-negative"
+    }
+  ],
+  "Constraints": [
+    {
+      "Name": "ctMaxTotal",
+      "Type": "Linear",
+      "Index": "Self",
+      "Sense": "<=",
+      "RHS": 50.0
+    },
+    {
+      "Name": "ctMaxTotal2",
+      "Type": "Linear",
+      "Index": "Self",
+      "Sense": "<=",
+      "RHS": 180.0
+    },
+    {
+      "Name": "ctChloride",
+      "Type": "Linear",
+      "Index": "Self",
+      "Sense": "<=",
+      "RHS": 40.0
+    }
+  ],
+  "Decision_Expressions": [
+    {
+      "Name": "total",
+      "Type": "Linear",
+      "Index": "Self",
+      "Sense": "None"
+    }
+  ]
+  "Coefficients": [
+    {
+      "Name": "total_gas",
+      "Decision_Expressions": "total",
+      "Variables": "gas",
+      "Entries": 40.0
+    },
+    {
+      "Name": "total_chloride",
+      "Decision_Expressions": "total",
+      "Variables": "chloride",
+      "Entries": 50.0
+    },
+    {
+      "Name": "ctMaxTotal_gas",
+      "Constraints": "ctMaxTotal",
+      "Variables": "gas",
+      "Entries": 1.0
+    },
+    {
+      "Name": "ctMaxTotal_chloride",
+      "Constraints": "ctMaxTotal",
+      "Variables": "chloride",
+      "Entries": 1.0
+    },
+    {
+      "Name": "ctMaxTotal2_gas",
+      "Constraints": "ctMaxTotal2",
+      "Variables": "gas",
+      "Entries": 3.0
+    },
+    {
+      "Name": "ctMaxTotal2_chloride",
+      "Constraints": "ctMaxTotal2",
+      "Variables": "chloride",
+      "Entries": 4.0
+    },
+    {
+      "Name": "ctMaxChloride_chloride",
+      "Constraints": "ctMaxChloride",
+      "Variables": "chloride",
+      "Entries": 1.0
+    }
+  ]
+}

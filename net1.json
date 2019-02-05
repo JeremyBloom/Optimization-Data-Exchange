@@ -1,0 +1,95 @@
+{
+  "Problem": {
+    "Name": "general_transshipment",
+    "Reference": "https://ampl.com/BOOK/EXAMPLES/EXAMPLES2/net1.mod",
+    "Author": "Jeremy A. Bloom (jeremyblmca@gmail.com)",
+    "Notices": "Copyright © 2019 Jeremy A. Bloom"
+  },
+  "Input_Data_Model": {
+    "cities": {
+      "*city":              "String",
+      "netSupply":          "Double"
+    },
+    "links": {
+      "*origin":            "String",
+      "*destination":       "String",
+      "cost":               "Double",
+      "capacity":           "Double"
+    }
+  },
+  "Output_Data_Model": {
+    "ship": {
+      "*origin(city)":      "String",
+      "*destination(city)": "String",
+      "packages":           "Double"
+    }
+  },
+  "Data": {
+    "cities": [
+      {"city": "PITT", "netSupply": 450.0},
+      {"city": "NE", "netSupply": 0.0},
+      {"city": "SE", "netSupply": 0.0},
+      {"city": "BOS", "netSupply": -90.0},
+      {"city": "EWR", "netSupply": -120.0},
+      {"city": "BWI", "netSupply": -120.0},
+      {"city": "ATL", "netSupply": -70.0},
+      {"city": "MCO", "netSupply": -50.0}
+    ],
+    "links": [
+      {"origin": "PITT", "destination": "NE", "cost": 2.5, "capacity": 250.0},
+      {"origin": "PITT", "destination": "SE", "cost": 3.5, "capacity": 250.0},
+      {"origin": "NE", "destination": "BOS", "cost": 1.7, "capacity": 100.0},
+      {"origin": "NE", "destination": "EWR", "cost": 0.7, "capacity": 100.0},
+      {"origin": "NE", "destination": "BWI", "cost": 1.3, "capacity": 100.0},
+      {"origin": "SE", "destination": "EWR", "cost": 1.3, "capacity": 100.0},
+      {"origin": "SE", "destination": "BWI", "cost": 0.8, "capacity": 100.0},
+      {"origin": "SE", "destination": "ATL", "cost": 0.2, "capacity": 100.0},
+      {"origin": "SE", "destination": "MCO", "cost": 2.1, "capacity": 100.0}
+    ]
+  },
+  "Variables": [
+    {
+      "Name": "ship",
+      "Type": "Continuous",
+      "Index": "links",
+      "Bounds": {"Lower": 0.0, "Upper": "links.capacity"}
+    }
+  ],
+  "Constraints": [
+    {
+      "Name": "balance",
+      "Type": "Linear",
+      "Index": "cities",
+      "Sense": "==",
+      "RHS": "cities.netSupply"
+    }
+  ],
+  "Decision_Expressions": [
+    {
+      "Name": "totalCost",
+      "Type": "Linear",
+      "Index": "Self",
+      "Sense": "minimize"
+    }
+  ],
+  "Coefficients": [
+    {
+      "Name": "balance_shipFrom",
+      "Constraints": "balance",
+      "Variables": {"Name":"ship", "Index": "links.origin(city)"},
+      "Entries": 1.0
+    },
+    {
+      "Name": "balance_shipTo",
+      "Constraints": "balance",
+      "Variables": {"Name":"ship", "Index": "links.destination(city)"},
+      "Entries": -1.0
+    },
+    {
+      "Name": "total_ship",
+      "Decision_Expressions": "totalCost",
+      "Variables": "ship",
+      "Entries": "links.cost"
+    }
+  ]
+}
