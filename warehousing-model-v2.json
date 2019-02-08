@@ -1,0 +1,196 @@
+{
+  "PROBLEM": {
+    "NAME": "warehouse_location v2.0",
+    "REFERENCE": "https://github.com/JeremyBloom/Optimization---Sample-Notebooks/blob/master/Optimization%2BModeling%2Band%2BRelational%2BData%2Bpub.ipynb",
+    "AUTHOR": "Jeremy A. Bloom (jeremyblmca@gmail.com)",
+    "NOTICES": "Copyright © 2019 Jeremy A. Bloom"
+  },
+  "INPUT_DATA_MODEL": {
+    "warehouses": {
+      "*location":    "String",
+      "fixedCost":    "Double",
+      "capacityCost": "Double"
+    },
+    "routes": {
+      "*location":    "String",
+      "*store":       "String",
+      "shippingCost": "Double"
+    },
+    "stores": {
+      "*store":       "String"
+    },
+    "demands": {
+      "*store":       "String",
+      "amount":       "Double"
+    }
+},
+  "OUTPUT_DATA_MODEL": {
+    "objectives": {
+      "*problem":     "String",
+        "*dExpr":     "String",
+        "value":      "Double"
+    },
+    "openWarehouses": {
+        "*location":  "String",
+        "open":       "Integer",
+        "capacity":   "Double"
+    },
+    "shipments": {
+        "*location":  "String",
+        "*store":     "String",
+        "amount":     "Double"
+    }
+  },
+  "DATA": {
+    "routes" : [
+      {"location" : "Brockton, MA", "store" : "Malden, MA", "shippingCost" : 42.94},
+  //   ...
+      {"location" : "Bristol, CT", "store" : "Stamford, CT", "shippingCost" : 94.66}
+    ],
+    "stores" : [
+      {"storeId" : "Malden, MA"},
+  //   ...
+      {"storeId" : "Stamford, CT"}
+    ],
+    "warehouses" : [
+      {"location" : "Brockton, MA", "fixedCost" : 550000.0, "capacityCost" : 148.0},
+      {"location" : "Bristol, CT", "fixedCost" : 600000.0, "capacityCost" : 148.0}
+    ],
+    "demands" : [
+      {"store" : "Malden, MA", "scenarioId" : "0", "amount" : 104.0},
+  //   ...
+      {"store" : "Stamford, CT", "scenarioId" : "0", "amount" : 73.0}
+    ]
+  },
+  "VARIABLES": [
+    {
+      "NAME": "open",
+      "TYPE": "BINARY",
+      "INDEX": "warehouses",
+      "BOUNDS": "NON_NEGATIVE"
+    },
+    {
+      "NAME": "capacity",
+      "TYPE": "CONTINUOUS",
+      "INDEX": "warehouses",
+      "BOUNDS": "NON_NEGATIVE"
+    },
+    {
+      "NAME": "ship",
+      "TYPE": "CONTINUOUS",
+      "INDEX": "routes",
+      "BOUNDS": {"LOWER": "0.0", "UPPER": "1.0"}
+    }
+  ],
+  "CONSTRAINTS": [
+    {
+      "NAME": "ctCapacity",
+      "TYPE": "LINEAR",
+      "INDEX": "warehouses",
+      "BOUNDS": {"LOWER": "0.0", "UPPER": "INFINITY"}
+    },
+    {
+      "NAME": "ctDemand",
+      "TYPE": "LINEAR",
+      "Index": "stores",
+      "BOUNDS": {"LOWER": "1.0", "UPPER": "INFINITY"}
+    },
+    {
+      "NAME": "ctSupply",
+      "TYPE": "LINEAR",
+      "INDEX": "routes",
+      "BOUNDS": {"LOWER": "-INFINITY", "UPPER": "0.0"}
+    }
+  ],
+  "DECISION_EXPRESSIONS": [
+    {
+      "NAME": "fixedCost",
+      "TYPE": "LINEAR",
+      "INDEX": "SELF",
+      "SENSE": "NONE"
+    },
+    {
+      "NAME": "variableCost",
+      "TYPE": "LINEAR",
+      "INDEX": "SELF",
+      "SENSE": "NONE"
+    },
+    {
+      "NAME": "totalCost",
+      "TYPE": "LINEAR",
+      "INDEX": "SELF",
+      "SENSE": "MINIMIZE"
+    }
+  ],
+  "COEFFICIENTS": [
+    {
+      "NAME": "entries_fixed_open",
+      "DECISION_EXPRESSIONS": "fixedCost",
+      "VARIABLES": "open",
+      "CONDITION": "open*.location == warehouses.location",
+      "ENTRIES": "warehouses.fixedCost"
+    },
+    {
+      "NAME": "entries_fixed_capacity",
+      "DECISION_EXPRESSIONS": "fixedCost",
+      "VARIABLES": "capacity",
+      "CONDITION": "capacity*.location == warehouses.location",
+      "ENTRIES": "warehouses.capacityCost"
+    },
+    {
+      "NAME": "entries_operating_ship",
+      "DECISION_EXPRESSIONS": "operatingCost",
+      "VARIABLES": "ship",
+      "CONDITION": "ship* MATCHES routes",
+      "ENTRIES": "routes.shippingCost"
+    },
+    {
+      "NAME": "entries_total_fixed",
+      "DECISION_EXPRESSIONS": "totalCost",
+      "VARIABLES": "fixedCost",
+      "CONDITION": "",
+      "ENTRIES": "1.0"
+    },
+    {
+      "NAME": "entries_total_operating",
+      "DECISION_EXPRESSIONS": "totalCost",
+      "VARIABLES": "variableCost",
+      "ENTRIES": "1.0"
+    },
+    {
+      "NAME": "entries_ctCapacity_capacity",
+      "CONSTRAINTS": "ctCapacity",
+      "VARIABLES": "capacity",
+      "CONDITION": "ctCapacity* MATCHES capacity*",
+      "ENTRIES": "1.0"
+    },
+    {
+      "NAME": "entries_ctCapacity_ship",
+      "CONSTRAINTS": "ctCapacity",
+      "VARIABLES": "ship",
+      "CONDITION": "ctCapacity*.location == ship*.location AND ship*.store == demands.store",
+      "ENTRIES": "-demands.amount"
+    },
+     {
+      "NAME": "entries_ctDemand_ship",
+      "CONSTRAINTS": "ctDemand",
+      "VARIABLES": "ship",
+      "CONDITION": "ctDemand* MATCHES ship*",
+      "ENTRIES": "1.0"
+    },
+     {
+      "NAME": "entries_ctSupply_open",
+      "CONSTRAINTS": "ctSupply",
+      "VARIABLES": "open",
+      "CONDITION": "ctSupply* MATCHES open*",
+      "ENTRIES": "-1.0"
+    },
+     {
+      "NAME":"entries_ctSupply_ship",
+      "CONSTRAINTS": "ctSupply",
+      "VARIABLES": "ship",
+      "CONDITION": "ctSupply* MATCHES ship*",
+      "ENTRIES": "1.0"
+    }
+  ]
+}
