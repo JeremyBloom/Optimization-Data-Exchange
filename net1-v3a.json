@@ -1,0 +1,314 @@
+{
+  "PROBLEM": {
+    "NAME": "general_transshipment v3.0a, instance form component-wise",
+    "REFERENCE": "https://ampl.com/BOOK/EXAMPLES/EXAMPLES2/net1.mod",
+    "AUTHOR": "Jeremy A. Bloom (jeremyblmca@gmail.com)",
+    "NOTICES": "Copyright © 2019 Jeremy A. Bloom"
+  },
+  "VARIABLES": [
+    {
+      "NAME": "ship_PITT_NE",
+      "TYPE": "CONTINUOUS",
+      "INDEX": "SELF",
+      "BOUNDS": {"LOWER": "0.0", "UPPER": "250.0"}
+    },
+    {
+      "NAME": "ship_PITT_SE",
+      "TYPE": "CONTINUOUS",
+      "INDEX": "SELF",
+      "BOUNDS": {"LOWER": "0.0", "UPPER": "250.0"}
+    },
+    {
+      "NAME": "ship_NE_BOS",
+      "TYPE": "CONTINUOUS",
+      "INDEX": "SELF",
+      "BOUNDS": {"LOWER": "0.0", "UPPER": "100.0"}
+    },
+    {
+      "NAME": "ship_NE_EWR",
+      "TYPE": "CONTINUOUS",
+      "INDEX": "SELF",
+      "BOUNDS": {"LOWER": "0.0", "UPPER": "100.0"}
+    },
+    {
+      "NAME": "ship_NE_BWI",
+      "TYPE": "CONTINUOUS",
+      "INDEX": "SELF",
+      "BOUNDS": {"LOWER": "0.0", "UPPER": "100.0"}
+    },
+    {
+      "NAME": "ship_SE_EWR",
+      "TYPE": "Continuous",
+      "INDEX": "SELF",
+      "BOUNDS": {"LOWER": "0.0", "UPPER": "100.0"}
+    },
+    {
+      "NAME": "ship_SE_BWI",
+      "TYPE": "CONTINUOUS",
+      "INDEX": "SELF",
+      "BOUNDS": {"LOWER": "0.0", "UPPER": "100.0"}
+    },
+    {
+      "NAME": "ship_SE_ATL",
+      "TYPE": "CONTINUOUS",
+      "INDEX": "SELF",
+      "BOUNDS": {"LOWER": "0.0", "UPPER": "100.0"}
+    },
+    {
+      "NAME": "ship_SE_MCO",
+      "TYPE": "CONTINUOUS",
+      "INDEX": "SELF",
+      "BOUNDS": {"LOWER": "0.0", "UPPER": "100.0"}
+    }
+  ],
+  "CONSTRAINTS": [
+    {
+      "NAME": "balance_PITT",
+      "TYPE": "CONTINUOUS",
+      "INDEX": "SELF",
+      "BOUNDS": {"LOWER": "450.0", "UPPER": "450.0"}
+    },
+    {
+      "NAME": "balance_NE",
+      "TYPE": "CONTINUOUS",
+      "INDEX": "SELF",
+      "BOUNDS": {"LOWER": "0.0", "UPPER": "0.0"}
+    },
+    {
+      "NAME": "balance_SE",
+      "TYPE": "CONTINUOUS",
+      "INDEX": "SELF",
+      "BOUNDS": {"LOWER": "0.0", "UPPER": "0.0"}
+    },
+    {
+      "NAME": "balance_BOS",
+      "TYPE": "CONTINUOUS",
+      "INDEX": "SELF",
+      "BOUNDS": {"LOWER": "-90.0", "UPPER": "-90.0"}
+    },
+    {
+      "NAME": "balance_EWR",
+      "TYPE": "CONTINUOUS",
+      "INDEX": "SELF",
+      "BOUNDS": {"LOWER": "-120.0", "UPPER": "-120.0"}
+    },
+    {
+      "NAME": "balance_BWI",
+      "TYPE": "CONTINUOUS",
+      "INDEX": "SELF",
+      "BOUNDS": {"LOWER": "-120.0", "UPPER": "-120.0"}
+    },
+    {
+      "NAME": "balance_ATL",
+      "TYPE": "CONTINUOUS",
+      "INDEX": "SELF",
+      "BOUNDS": {"LOWER": "-70.0", "UPPER": "-70.0"}
+    },
+    {
+      "NAME": "balance_MCO",
+      "TYPE": "CONTINUOUS",
+      "INDEX": "SELF",
+      "BOUNDS": {"LOWER": "-50.0", "UPPER": "-50.0"}
+    }
+  ],
+  "DECISION_EXPRESSIONS": [
+    {
+      "NAME": "totalCost",
+      "TYPE": "LINEAR",
+      "INDEX": "SELF",
+      "SENSE": "MINIMIZE"
+    }
+  ],
+  "COEFFICIENTS": [
+    {
+      "NAME": "balance_PITT_ship_PITT_NE",
+      "CONSTRAINTS": "balance_PITT",
+      "VARIABLES": "ship_PITT_NE",
+      "CONDITION": "",
+      "ENTRIES": "1.0"
+    },
+    {
+      "NAME": "balance_PITT_ship_PITT_SE",
+      "CONSTRAINTS": "balance_PITT",
+      "VARIABLES": "ship_PITT_SE",
+      "CONDITION": "",
+      "ENTRIES": "1.0"
+    },
+    {
+      "NAME": "balance_NE_ship_NE_BOS",
+      "CONSTRAINTS": "balance_NE",
+      "VARIABLES": "ship_NE_BOS",
+      "CONDITION": "",
+      "ENTRIES": "1.0"
+    },
+    {
+      "NAME": "balance_NE_ship_NE_EWR",
+      "CONSTRAINTS": "balance_NE",
+      "VARIABLES": "ship_NE_EWR",
+      "CONDITION": "",
+      "ENTRIES": "1.0"
+    },
+    {
+      "NAME": "balance_NE_ship_NE_BWI",
+      "CONSTRAINTS": "balance_NE",
+      "VARIABLES": "ship_NE_BWI",
+      "CONDITION": "",
+      "ENTRIES": "1.0"
+    },
+    {
+      "NAME": "balance_SE_ship_SE_EWR",
+      "CONSTRAINTS": "balance_SE",
+      "VARIABLES": "ship_SE_EWR",
+      "CONDITION": "",
+      "ENTRIES": "1.0"
+    },
+    {
+      "NAME": "balance_SE_ship_SE_BWI",
+      "CONSTRAINTS": "balance_SE",
+      "VARIABLES": "ship_SE_BWI",
+      "CONDITION": "",
+      "ENTRIES": "1.0"
+    },
+    {
+      "NAME": "balance_SE_ship_SE_ATL",
+      "CONSTRAINTS": "balance_SE",
+      "VARIABLES": "ship_SE_ATL",
+      "CONDITION": "",
+      "ENTRIES": "1.0"
+    },
+    {
+      "NAME": "balance_SE_ship_SE_MCO",
+      "CONSTRAINTS": "balance_SE",
+      "VARIABLES": "ship_SE_MCO",
+      "CONDITION": "",
+      "ENTRIES": "1.0"
+    },
+    {
+      "NAME": "balance_NE_ship_PITT_NE",
+      "CONSTRAINTS": "balance_NE",
+      "VARIABLES": "ship_PITT_NE",
+      "CONDITION": "",
+      "ENTRIES": "-1.0"
+    },
+    {
+      "NAME": "balance_SE_ship_PITT_SE",
+      "CONSTRAINTS": "balance_SE",
+      "VARIABLES": "ship_PITT_SE",
+      "CONDITION": "",
+      "ENTRIES": "-1.0"
+    },
+    {
+      "NAME": "balance_BOS_ship_NE_BOS",
+      "CONSTRAINTS": "balance_BOS",
+      "VARIABLES": "ship_NE_BOS",
+      "CONDITION": "",
+      "ENTRIES": "-1.0"
+    },
+    {
+      "NAME": "balance_EWR_ship_NE_EWR",
+      "CONSTRAINTS": "balance_EWR",
+      "VARIABLES": "ship_NE_EWR",
+      "CONDITION": "",
+      "ENTRIES": "-1.0"
+    },
+    {
+      "NAME": "balance_BWI_ship_NE_BWI",
+      "CONSTRAINTS": "balance_BWI",
+      "VARIABLES": "ship_NE_BWI",
+      "CONDITION": "",
+      "ENTRIES": "-1.0"
+    },
+    {
+      "NAME": "balance_EWR_ship_SE_EWR",
+      "CONSTRAINTS": "balance_EWR",
+      "VARIABLES": "ship_SE_EWR",
+      "CONDITION": "",
+      "ENTRIES": "-1.0"
+    },
+    {
+      "NAME": "balance_BWI_ship_SE_BWI",
+      "CONSTRAINTS": "balance_BWI",
+      "VARIABLES": "ship_SE_BWI",
+      "CONDITION": "",
+      "ENTRIES": "-1.0"
+    },
+    {
+      "NAME": "balance_ATL_ship_SE_ATL",
+      "CONSTRAINTS": "balance_ATL",
+      "VARIABLES": "ship_SE_ATL",
+      "CONDITION": "",
+      "ENTRIES": "-1.0"
+    },
+    {
+      "NAME": "balance_MCO_ship_SE_MCO",
+      "CONSTRAINTS": "balance_MCO",
+      "VARIABLES": "ship_SE_MCO",
+      "CONDITION": "",
+      "ENTRIES": "-1.0"
+    },
+    {
+      "NAME": "total_ship_PITT_NE",
+      "DECISION_EXPRESSIONS": "totalCost",
+      "VARIABLES": "ship_PITT_NE",
+      "CONDITION": "",
+      "ENTRIES": "2.5"
+    },
+    {
+      "NAME": "total_ship_PITT_SE",
+      "DECISION_EXPRESSIONS": "totalCost",
+      "VARIABLES": "ship_PITT_SE",
+      "CONDITION": "",
+      "ENTRIES": "3.5"
+    },
+    {
+      "NAME": "total_ship_NE_BOS",
+      "DECISION_EXPRESSIONS": "totalCost",
+      "VARIABLES": "ship_NE_BOS",
+      "CONDITION": "",
+      "ENTRIES": "1.7"
+    },
+    {
+      "NAME": "total_ship_NE_EWR",
+      "DECISION_EXPRESSIONS": "totalCost",
+      "VARIABLES": "ship_NE_EWR",
+      "CONDITION": "",
+      "ENTRIES": "0.7"
+    },
+    {
+      "NAME": "total_ship_NE_BWI",
+      "DECISION_EXPRESSIONS": "totalCost",
+      "VARIABLES": "ship_NE_BWI",
+      "CONDITION": "",
+      "ENTRIES": "1.3"
+    },
+    {
+      "NAME": "total_ship_SE_EWR",
+      "DECISION_EXPRESSIONS": "totalCost",
+      "VARIABLES": "ship_SE_EWR",
+      "CONDITION": "",
+      "ENTRIES": "1.3"
+    },
+    {
+      "NAME": "total_ship_SE_BWI",
+      "DECISION_EXPRESSIONS": "totalCost",
+      "VARIABLES": "ship_SE_BWI",
+      "CONDITION": "",
+      "ENTRIES": "0.8"
+    },
+    {
+      "NAME": "total_ship_SE_ATL",
+      "DECISION_EXPRESSIONS": "totalCost",
+      "VARIABLES": "ship_SE_ATL",
+      "CONDITION": "",
+      "ENTRIES": "0.2"
+    },
+    {
+      "NAME": "total_ship_SE_MCO",
+      "DECISION_EXPRESSIONS": "totalCost",
+      "VARIABLES": "ship_SE_MCO",
+      "CONDITION": "",
+      "ENTRIES": "2.1"
+    }
+  ]
+}
+
