@@ -1,0 +1,109 @@
+{
+  "PROBLEM": {
+    "NAME": "general_transshipment v2.0, recipe form, revised data format",
+    "REFERENCE": "https://ampl.com/BOOK/EXAMPLES/EXAMPLES2/net1.mod",
+    "AUTHOR": "Jeremy A. Bloom (jeremyblmca@gmail.com)",
+    "NOTICES": "Copyright © 2019 Jeremy A. Bloom"
+  },
+  "DATA": [
+    {
+      "NAME": "cities",
+      "ROLE": "INPUT",
+      "SCHEMA": {
+        "FIELDS": ["city",   "netSupply"],
+        "TYPES":  ["STRING", "DOUBLE"],
+        "KEYS":   ["TRUE",   "FALSE"]
+      },
+      "ROWS": [
+        [         "PITT",     450.0 ],
+        [         "NE",       0.0   ],
+        [         "SE",       0.0   ],
+        [         "BOS",      -90.0 ],
+        [         "EWR",      -120.0],
+        [         "BWI",      -120.0],
+        [         "ATL",      -70.0 ],
+        [         "MCO",      -50.0 ]
+      ]
+    },
+    {
+      "NAME": "links",
+      "ROLE": "INPUT",
+      "SCHEMA": {
+        "FIELDS": ["origin", "destination", "cost",   "capacity"],
+        "TYPES":  ["STRING", "STRING",      "DOUBLE", "DOUBLE"],
+        "KEYS":   ["TRUE",   "TRUE",        "FALSE",  "FALSE"]
+      },
+      "ROWS": [
+        [          "PITT",   "NE",          2.5,      250.0],
+        [          "PITT",   "SE",          3.5,      250.0],
+        [          "NE",     "BOS",         1.7,      100.0],
+        [          "NE",     "EWR",         0.7,      100.0],
+        [          "NE",     "BWI",         1.3,      100.0],
+        [          "SE",     "EWR",         1.3,      100.0],
+        [          "SE",     "BWI",         0.8,      100.0],
+        [          "SE",     "ATL",         0.2,      100.0],
+        [          "SE",     "MCO",         2.1,      100.0]
+      ]
+    },
+    {
+      "NAME": "shipments",
+      "ROLE": "OUTPUT",
+      "SCHEMA": {
+        "FIELDS": ["origin", "destination", "packages"],
+        "TYPES":  ["STRING", "STRING",      "DOUBLE"],
+        "KEYS":   ["TRUE",   "TRUE",        "FALSE"]
+      },
+      "ROWS": [
+        ["ship.origin", "ship.destination", "ship.value"]
+      ]
+    }
+  ],
+  "VARIABLES": [
+    {
+      "NAME": "ship",
+      "TYPE": "CONTINUOUS",
+      "INDEX": "links",
+      "BOUNDS": {"LOWER": "0.0", "UPPER": "ship*.capacity"}
+    }
+  ],
+  "CONSTRAINTS": [
+    {
+      "NAME": "balance",
+      "TYPE": "CONTINUOUS",
+      "INDEX": "cities",
+      "BOUNDS": {"LOWER": "balance*.netSupply", "UPPER": "balance*.netSupply"}
+   }
+  ],
+  "DECISION_EXPRESSIONS": [
+    {
+      "NAME": "totalCost",
+      "TYPE": "LINEAR",
+      "INDEX": "SELF",
+      "SENSE": "MINIMIZE"
+    }
+  ],
+  "COEFFICIENTS": [
+    {
+      "NAME": "balance_shipFrom",
+      "CONSTRAINTS": "balance",
+      "VARIABLES": "ship",
+      "CONDITION": "balance*.city == ship*.origin",
+      "ENTRIES": "1.0"
+    },
+    {
+      "NAME": "balance_shipTo",
+      "CONSTRAINTS": "balance",
+      "VARIABLES": "ship",
+      "CONDITION": "balance*.city == ship*.destination",
+      "ENTRIES": "-1.0"
+    },
+    {
+      "NAME": "total_ship",
+      "DECISION_EXPRESSIONS": "totalCost",
+      "VARIABLES": "ship",
+      "CONDITION": "ship* MATCHES links",
+      "ENTRIES": "links.cost"
+    }
+  ]
+}
+
