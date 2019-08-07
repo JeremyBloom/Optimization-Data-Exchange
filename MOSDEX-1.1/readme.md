@@ -10,3 +10,5 @@ Synopsis of Changes In v1-1 vs. v1-0
 <li>Renamed the Expression field in Heading as Math to avoid name conflict with the Expression class</li>
 <li>Renamed the Coefficient subclass of Table as Term and created separate schemas for linear, quadratic and nonlinear types to accommodate the corresponding number and types of arguments</li>
 </ul>
+
+These files were created using PyCharm Community Edition, which has a very nice JSON editor that will validate a JSON file against a JSON Schema.
