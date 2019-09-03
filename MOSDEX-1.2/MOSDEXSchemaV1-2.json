@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-04/schema#",
-  "$id": "https://github.com/JeremyBloom/Optimization-Data-Exchange/tree/master/MOSDEX/MOSDEX v1-2/MOSDEXSchemaV1-2.json",
+  "$id": "https://github.com/JeremyBloom/Optimization-Data-Exchange/blob/master/MOSDEX-1.2/MOSDEXSchemaV1-2.json",
   "title": "MOSDEXFile",
   "description": "The syntax of MOSDEX: Mathematical Optimization Solver Data EXchange, v 1-2. Copyright © 2019 Jeremy A. Bloom",
 
